@@ -1,0 +1,14 @@
+.news {
+    display: flex;
+    flex-direction: row;
+    border: 1;
+    border-style: solid;
+    margin-left: 2%;
+    margin-right: 2%;
+    margin-bottom: 2%;
+}
+
+.news_img {
+    width: 80px;
+    height: 80px;
+}
