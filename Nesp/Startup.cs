@@ -1,10 +1,16 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using Nesp.Model;
+
+
 
 namespace Nesp
 {
@@ -17,20 +23,35 @@ namespace Nesp
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(
+                    Configuration.GetConnectionString("TaskConnection")));
+            services.AddDbContext<UserContext>(options => options.UseNpgsql(
+                    Configuration.GetConnectionString("UserConnection")));
 
-            services.AddControllersWithViews();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                               .AddJwtBearer(options =>
+                               {
+                                   options.RequireHttpsMetadata = false;
+                                   options.TokenValidationParameters = new TokenValidationParameters
+                                   {
+                                       ValidateIssuer = true,
+                                       ValidIssuer = AuthOptions.ISSUER,
+                                       ValidateAudience = true,
+                                       ValidAudience = AuthOptions.AUDIENCE,
+                                       ValidateLifetime = true,
+                                       IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                                       ValidateIssuerSigningKey = true,
+                                   };
+                               });
 
-            // In production, the React files will be served from this directory
+            services.AddControllers();
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp/build";
+                configuration.RootPath = "ClientApp/dist";
             });
         }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -40,15 +61,33 @@ namespace Nesp
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
+            if (!env.IsDevelopment())
+            {
+                app.UseSpaStaticFiles();
+            }
 
             app.UseRouting();
+
+            app.UseCookiePolicy(new CookiePolicyOptions
+            {
+                HttpOnly = HttpOnlyPolicy.Always,
+            });
+
+            app.Use(async (context, next) =>
+            {
+                var token = context.Request.Cookies[".AspNetCore.Application.Id"];
+                if (!string.IsNullOrEmpty(token))
+                    context.Request.Headers.Add("Authorization", "Bearer " + token);
+
+                await next();
+            });
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

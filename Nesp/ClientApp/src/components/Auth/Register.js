@@ -3,8 +3,7 @@ import { render } from 'react-dom';
 import style from './UserAuth.module.css'
 
 
-const Login = (props) => {
-
+const Register = (props) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
@@ -18,31 +17,34 @@ const Login = (props) => {
         setPassword(body);
     }
 
-    let login = () => {
-        props.login(username, password);
+
+    let register = () => {
+        props.register(username, password);
     }
 
     return (
         <div className={style.modal}>
             <div className={style.modal_content}>
                 <div className={style.modal_header}>
-                    <h1>Вход</h1>
-                    <button type="button" className="btn btn-danger" onClick={props.exit}>X</button>
+                    <h1>Регистрация</h1>
                 </div>
                 <div className={style.modal_body}>
                     <div className="col-md-8">
                         <input className="form-control" placeholder="Логин" 
-                         value={username} onChange={onLoginChange}   id={style.modal_input} required />
+                        value={username} onChange={onLoginChange}  id={style.modal_input} required />
                     </div>
                     <div className="col-md-8">
                         <input className="form-control" type="password" placeholder="Пароль"
-                            value={password} onChange={onPasswordChange} id={style.modal_input} required />
+                         value={password} onChange={onPasswordChange} id={style.modal_input} required />
                     </div>
+                    {/* <div className="col-md-8">
+                        <input className="form-control" type="password" placeholder="Повторить пароль" id={style.modal_input} required />
+                    </div> */}
                 </div>
                 <div className="modalFooter">
                     <div className="form-inline" id={style.modal_btn}>
-                        <button type="button" className="btn btn-primary" id={style.table_btn} onClick={props.register}> Регистрация </button>
-                        <button type="button" className="btn btn-success" id={style.table_btn_log} onClick={login}> Вход </button>
+                        <button type="button" className="btn btn-danger" id={style.table_btn} onClick={props.exit}> Назад </button>
+                        <button type="button" className="btn btn-primary" id={style.table_btn_log} onClick={register}> Регистрация </button>
                     </div>
                 </div>
             </div>
@@ -50,4 +52,4 @@ const Login = (props) => {
     )
 }
 
-export default Login;
+export default Register;

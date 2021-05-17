@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import NewsBox from './NewsBox';
+import axios from 'axios'
+import { proxy } from 'jquery';
 
 const News = () => {
     let [news, setNews] = useState([{
@@ -18,12 +20,11 @@ const News = () => {
         description: "News text text text text text",
         link: "/onliner",
     }]);
-
-
+    
     return (
-        <>
-            {news.map((n) => <NewsBox n={n}/>)}
-        </>
+    <>
+        {news.map((n) => < NewsBox n={n} />)}
+    </>
     );
 }
 

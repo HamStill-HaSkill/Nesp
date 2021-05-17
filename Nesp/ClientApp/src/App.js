@@ -1,17 +1,16 @@
 import React from 'react';
-import Layout from './components/Layout';
 
-import './custom.css'
-import News from './components/News/News';
+import HTTP from './components/Services/HttpSender';
+
+
 
 const App = () => {
 
-  return (
-    <>
-      <Layout />
-      <News />
-    </>
-  );
+    return (
+        <>
+            <HTTP />
+        </>
+    );
 }
 
 export default App;
