@@ -4,11 +4,14 @@ import { Link } from 'react-router-dom';
 import './styles.css';
 
 const Subscribe = (props) => {
+    let getRSS = () => {
+        
+    }
     return (
         <NavItem className="list">
             <div className="form-inline"> 
-                <NavLink tag={Link} className="text-dark" to="/youtube">{props.sub}</NavLink>
-                <button className="btn btn-danger">Unsubscribe</button>
+                <a tag={Link} className="text-dark" onClick={() => props.getRSS(props.sub)}>{props.sub}</a>
+                <button className="btn btn-danger" onClick={() => props.unSub(props.sub)}>Unsubscribe</button>
             </div>
         </NavItem>
     )

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { render } from 'react-dom';
 import style from './UserAuth.module.css'
+import { NavItem, NavLink } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 
 const Login = (props) => {
@@ -40,8 +42,16 @@ const Login = (props) => {
                 </div>
                 <div className="modalFooter">
                     <div className="form-inline" id={style.modal_btn}>
-                        <button type="button" className="btn btn-primary" id={style.table_btn} onClick={props.register}> Регистрация </button>
-                        <button type="button" className="btn btn-success" id={style.table_btn_log} onClick={login}> Вход </button>
+                        <button type="button" className="btn btn-primary" id={style.table_btn} onClick={props.register}> 
+                            <NavItem className="list">
+                                <NavLink tag={Link} className="text-dark" to="/register">Register</NavLink>
+                            </NavItem>
+                        </button>
+                        <button type="button" className="btn btn-success" id={style.table_btn_log} onClick={login}>
+                            <NavItem className="list">
+                                <NavLink tag={Link} className="text-dark" to="/">Sign In</NavLink>
+                            </NavItem>
+                        </button>
                     </div>
                 </div>
             </div>

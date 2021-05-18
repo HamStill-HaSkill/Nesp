@@ -29,6 +29,8 @@ namespace Nesp
                     Configuration.GetConnectionString("TaskConnection")));
             services.AddDbContext<UserContext>(options => options.UseNpgsql(
                     Configuration.GetConnectionString("UserConnection")));
+            services.AddDbContext<SubContext>(options => options.UseNpgsql(
+                    Configuration.GetConnectionString("SubConnection")));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                                .AddJwtBearer(options =>

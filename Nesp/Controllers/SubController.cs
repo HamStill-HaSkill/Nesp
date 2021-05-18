@@ -14,45 +14,42 @@ using Newtonsoft.Json;
 
 namespace Nesp.Controllers
 {
-    public class Sub 
-    {
-        public string Target {get; set;}
-    }
-
     [ApiController]
     [Route("api/subs")]
     public class SubController : Controller
     {
         ApplicationContext db;
         UserContext userDb;
+        SubContext subDb;
         private IWebHostEnvironment _env;
-        public SubController(ApplicationContext context, UserContext userContext, IWebHostEnvironment env)
+        public SubController(ApplicationContext context, UserContext userContext, SubContext subContext, IWebHostEnvironment env)
         {
             _env = env;
             db = context;
+            subDb = subContext;
             userDb = userContext;
         }
         [Authorize]
         [HttpPost]
         [Route("all")]
-        public IEnumerable<UserTask> Get(Name username)
+        public IEnumerable<Sub> Get(Sub sub)
         {
-            return db.Tasks.Where(x => x.UserName == username.Username).ToList();
+            return subDb.Subs.Where(x => x.Username == sub.Username).ToList();
         }
 
-        public IActionResult ParseRSSdotnet()
+        public IActionResult ParseRSSdotnet(string url)
         {
             SyndicationFeed feed = null;
 
             try
             {
-                using (var reader = XmlReader.Create("https://news.tut.by/rss/index.rss"))
+                using (var reader = XmlReader.Create(url))
                 {
                     feed = SyndicationFeed.Load(reader);
                 }
             }
             catch { } // TODO: Deal with unavailable resource.
-            var newsNotes = new List<News>(); 
+            var newsNotes = new List<News>();
 
             if (feed != null)
             {
@@ -71,7 +68,37 @@ namespace Nesp.Controllers
         [Route("rss")]
         public IActionResult GetRSS(Sub target)
         {
-            return ParseRSSdotnet();
+            var sub = subDb.Subs.FirstOrDefault(x => x.Name == target.Name);
+            return ParseRSSdotnet(sub.URL);
+        }
+
+        [HttpPost]
+        [Route("delrss")]
+        public IActionResult DelRSS(Sub target)
+        {
+            Sub sub = subDb.Subs.FirstOrDefault(x => (x.Username == target.Username) && (x.Name == target.Name));
+            if (sub != null)
+            {
+                subDb.Subs.Remove(sub);
+                subDb.SaveChanges();
+            }
+            return Ok(sub);
+        }
+
+        [HttpPost]
+        [Route("addrss")]
+        public IActionResult AddRSS(Sub sub)
+        {            
+            Console.WriteLine(1);
+            if (ModelState.IsValid)
+            {
+                Console.WriteLine(2);
+                subDb.Subs.Add(sub);
+                subDb.SaveChanges();
+                return Ok(sub);
+            }
+            Console.WriteLine(3);
+            return BadRequest(ModelState);
         }
 
         [Authorize]

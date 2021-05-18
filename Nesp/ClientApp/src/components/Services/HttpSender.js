@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../Layout';
 import News from '../News/News';
 import Login from '../Auth/Login';
@@ -14,9 +14,9 @@ const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 
 const HTTP = () => {
     let [news, setNews] = useState([]);
-    let getRSS = (from) => {
-        let target = "Tut.by"
-        axios.post(url + "/rss", {target}).then(result => {
+    let [subs, setSubs] = useState([]);
+    let getRSS = (target) => {
+        axios.post(url + "/rss", {name: target}).then(result => {
             console.log(result);
             let newsNotes = [];
             result.data.forEach(e => {
@@ -30,8 +30,22 @@ const HTTP = () => {
         });
     }
 
-    let signIn = (username, password, setSignIn) => {
-        
+    let addRSS = (name, link) => {
+        let username = localStorage.getItem("username");
+        axios.post(url + "/addrss", {name, url: link, username});
+        getAllSub();
+        getAllSub();
+    }
+
+    let getAllSub = () => {
+        let username = localStorage.getItem("username");
+        axios.post(url + "/all", {username}).then(result => {
+            setSubs(result.data);
+            console.log(result.data);
+        });
+    }
+
+    let signIn = (username, password, setSignIn) => {   
         let body = { username: username, password: password };
         axios.post(authUrl, body, {
             withCredentials: true
@@ -44,6 +58,14 @@ const HTTP = () => {
                 console.log(reason.message);
             }
           })
+        getAllSub();
+    }
+
+    let unSub = (name) => {
+        let username = localStorage.getItem("username");
+        axios.post(url + "/delrss", {name, username});
+        getAllSub();
+        getAllSub();
     }
     let check = (setSignIn) => {
         axios.post(url + "/all", {username: ""}).then(response => {
@@ -58,12 +80,13 @@ const HTTP = () => {
         let data = {username: username, password: password}
         axios.post(userUrl + "/register", data);
     }
-    useState(() => {
-        getRSS();
+
+    useEffect(() => {
+        getAllSub();
     }, [])
     return (
         <BrowserRouter basename={baseUrl}>
-            <Layout />
+            <Layout addRSS={addRSS} getRSS={getRSS} unSub={unSub} subs={subs} />
             <News news={news}/>
             <Route exact path="/login" component={() => <Login login={signIn} />} />
             <Route exact path="/register" component={() => <Register register={register} />} />
