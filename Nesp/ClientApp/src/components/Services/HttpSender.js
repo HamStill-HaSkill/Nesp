@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React from 'react';
+import React, { useState } from 'react';
 import Layout from '../Layout';
 import News from '../News/News';
 import Login from '../Auth/Login';
@@ -13,9 +13,21 @@ const outUrl = "/api/users/logout";
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 
 const HTTP = () => {
+    let [news, setNews] = useState([]);
     let getRSS = (from) => {
         let target = "Tut.by"
-        axios.post(url + "/rss", {target}).then(result => console.log(result));
+        axios.post(url + "/rss", {target}).then(result => {
+            console.log(result);
+            let newsNotes = [];
+            result.data.forEach(e => {
+                newsNotes.push({
+                    description: e.summary.text,
+                    title: e.title.text,
+                    link: e.id,
+                })
+            });
+            setNews(newsNotes);
+        });
     }
 
     let signIn = (username, password, setSignIn) => {
@@ -46,11 +58,13 @@ const HTTP = () => {
         let data = {username: username, password: password}
         axios.post(userUrl + "/register", data);
     }
-    getRSS()
+    useState(() => {
+        getRSS();
+    }, [])
     return (
         <BrowserRouter basename={baseUrl}>
             <Layout />
-            <News />
+            <News news={news}/>
             <Route exact path="/login" component={() => <Login login={signIn} />} />
             <Route exact path="/register" component={() => <Register register={register} />} />
         </BrowserRouter>

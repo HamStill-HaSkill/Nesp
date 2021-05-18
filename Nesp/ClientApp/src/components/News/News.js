@@ -3,27 +3,10 @@ import NewsBox from './NewsBox';
 import axios from 'axios'
 import { proxy } from 'jquery';
 
-const News = () => {
-    let [news, setNews] = useState([{
-        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRToM59Ou3wqS4s8jj7qGdWGv6f_dL0oNmtSg&usqp=CAU",
-        tittle: "NEWS",
-        description: "News text text text text text",
-        link: "/onliner",
-    }, {
-        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRToM59Ou3wqS4s8jj7qGdWGv6f_dL0oNmtSg&usqp=CAU",
-        tittle: "NEWS",
-        description: "News text text text text text",
-        link: "/onliner",
-    }, {
-        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRToM59Ou3wqS4s8jj7qGdWGv6f_dL0oNmtSg&usqp=CAU",
-        tittle: "NEWS",
-        description: "News text text text text text",
-        link: "/onliner",
-    }]);
-    
+const News = (props) => {    
     return (
     <>
-        {news.map((n) => < NewsBox n={n} />)}
+        {props.news.map((n) => < NewsBox n={n} />)}
     </>
     );
 }

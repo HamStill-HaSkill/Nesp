@@ -25,9 +25,8 @@ const Login = (props) => {
     return (
         <div className={style.modal}>
             <div className={style.modal_content}>
-                <div className={style.modal_header}>
+                <div className={style.modal_header} >
                     <h1>Вход</h1>
-                    <button type="button" className="btn btn-danger" onClick={props.exit}>X</button>
                 </div>
                 <div className={style.modal_body}>
                     <div className="col-md-8">

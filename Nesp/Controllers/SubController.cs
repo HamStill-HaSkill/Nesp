@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Nesp.Model;
 using System.ServiceModel.Syndication;
 using System.Xml;
+using Newtonsoft.Json;
 
 namespace Nesp.Controllers
 {
@@ -39,7 +40,7 @@ namespace Nesp.Controllers
             return db.Tasks.Where(x => x.UserName == username.Username).ToList();
         }
 
-        public void ParseRSSdotnet()
+        public IActionResult ParseRSSdotnet()
         {
             SyndicationFeed feed = null;
 
@@ -51,22 +52,26 @@ namespace Nesp.Controllers
                 }
             }
             catch { } // TODO: Deal with unavailable resource.
+            var newsNotes = new List<News>(); 
 
             if (feed != null)
             {
                 foreach (var element in feed.Items)
                 {
-                    Console.WriteLine($"Title: {element.Title.Text}");
+                    var note = new News();
+                    note.Title = element.Title.Text;
+                    newsNotes.Add(note);
                 }
             }
+            return Json(feed.Items);
+
         }
 
         [HttpPost]
         [Route("rss")]
-        public string GetRSS(Sub target)
+        public IActionResult GetRSS(Sub target)
         {
-            ParseRSSdotnet();
-            return target.Target;
+            return ParseRSSdotnet();
         }
 
         [Authorize]
