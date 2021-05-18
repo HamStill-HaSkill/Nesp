@@ -16,6 +16,7 @@ const NavMenu = (props) => {
             <NavItem>
               <NavLink tag={Link} className="text-dark" to="/register">Register</NavLink>
             </NavItem>
+            <button ype="button" className="btn btn-danger" onClick={props.logout}>LogOut</button>
           </ul>
         </Container>
       </Navbar>

@@ -47,7 +47,7 @@ const Register = (props) => {
                     <div className="form-inline" id={style.modal_btn}>
                         <button type="button" className="btn btn-primary" id={style.table_btn} onClick={register}> 
                             <NavItem className="list">
-                                <NavLink tag={Link} className="text-dark" to="/register">Register</NavLink>
+                                <NavLink tag={Link} className="text-dark" to="/">Register</NavLink>
                             </NavItem>
                         </button>
                         <button type="button" className="btn btn-danger" id={style.table_btn_log}>

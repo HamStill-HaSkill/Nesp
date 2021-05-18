@@ -74,7 +74,6 @@ const HTTP = () => {
     }
     let logout = (setSignIn) => {
         axios.get(outUrl);
-        setSignIn(false, "")
     }
     let register = (username, password) => {
         let data = {username: username, password: password}
@@ -86,7 +85,7 @@ const HTTP = () => {
     }, [])
     return (
         <BrowserRouter basename={baseUrl}>
-            <Layout addRSS={addRSS} getRSS={getRSS} unSub={unSub} subs={subs} />
+            <Layout addRSS={addRSS} getRSS={getRSS} unSub={unSub} subs={subs} logout={logout} />
             <News news={news}/>
             <Route exact path="/login" component={() => <Login login={signIn} />} />
             <Route exact path="/register" component={() => <Register register={register} />} />

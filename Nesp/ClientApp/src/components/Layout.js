@@ -8,7 +8,7 @@ const Layout = (props) => {
     return (
         <div id="Layout">
             <Sidebar pageWrapId={"page-wrap"} unSub={props.unSub} outerContainerId={"Layout"} getRSS={props.getRSS} subs={props.subs} addRSS={props.addRSS}/>
-            <NavMenu />
+            <NavMenu logout={props.logout}/>
         </div>
     );
 }
